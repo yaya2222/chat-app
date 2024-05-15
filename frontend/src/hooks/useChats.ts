@@ -1,19 +1,17 @@
-import { getAllChats } from "./setting";
-import { ChatType } from "../type";
+// import { getAllChats } from "./setting";
+// import { ChatType } from "../type";
 
-interface useStateProps {}
+// export function useChats(
+//   setChats: React.Dispatch<React.SetStateAction<ChatType[]>>
+// ) {
+//   const getChats = async () => {
+//     const res = await fetch(getAllChats);
+//     if (res.ok) {
+//       const chats = await res.json();
 
-export function useChats(
-  setChats: React.Dispatch<React.SetStateAction<ChatType[]>>
-) {
-  const getChats = async () => {
-    const res = await fetch(getAllChats);
-    if (res.ok) {
-      const chats = await res.json();
+//       setChats(chats);
+//     }
+//   };
 
-      setChats(chats);
-    }
-  };
-
-  return { getChats };
-}
+//   return { getChats };
+// }

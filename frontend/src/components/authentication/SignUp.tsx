@@ -3,6 +3,7 @@ import { SignUpSchema, SignUpSchemaType } from "../../lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputForm from "../InputForm";
 import { useUser } from "../../hooks/useusers";
+import toast from "react-hot-toast";
 
 export default function SignUp() {
   const {
@@ -24,7 +25,12 @@ export default function SignUp() {
     if (file&& !(file as File).type.startsWith("image")) {
       setError("image", { message: "Only image" });
     } else {
-      signup(data)
+     const res = await signup(data)
+     if(res.status){
+      toast.success(`Welcome ${res.data?.name}`)
+     }else{
+      toast.error(res.message)
+     }
     }
   };
 

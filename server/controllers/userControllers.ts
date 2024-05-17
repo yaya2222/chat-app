@@ -3,19 +3,19 @@ import asyncHandler from "express-async-handler";
 import userModel from "../src/models/userModel"
 import { generateToken } from "../utils/generateToken";
 import { bcryptPassword, matchPassword } from "../utils/handlePassword";
-
+import cloudinary from "../config/cloudinary";
+import { uploadToCloudinary } from "../utils/uploadImage";
 
 interface registerUserBody {
-    name?: string,
-    password?: string,
-    email?: string,
-    pic?: File
+   name?:string,
+   email?:string,
+   password:string,
 }
 
-const registerUser: RequestHandler<unknown, unknown, registerUserBody, unknown> = asyncHandler(async (req, res) => {
-    const { name, email, password, pic } = req.body
-    console.log({ name, email, password, pic });
-    
+const registerUser: RequestHandler<unknown,unknown,registerUserBody,unknown> = asyncHandler(async (req, res) => {
+    const pic = req.file
+    const { name, email, password} = req.body
+
 
     if (!name || !email || !password) {
         res.status(400)
@@ -28,12 +28,13 @@ const registerUser: RequestHandler<unknown, unknown, registerUserBody, unknown> 
         throw new Error("User already exsits")
     }
     const newPassword = bcryptPassword(password)
-    if(pic){
-
+    let urlImage: string | undefined = undefined
+    if (pic) {
+        urlImage = await uploadToCloudinary(pic.path)
     }
 
     const user = await userModel.create({
-        name, password: newPassword, email, pic
+        name, password: newPassword, email, pic: urlImage
     })
 
 
@@ -44,6 +45,7 @@ const registerUser: RequestHandler<unknown, unknown, registerUserBody, unknown> 
         pic: user.pic,
         token: generateToken(user._id)
     })
+    res.status(200).send(123)
 }
 )
 
